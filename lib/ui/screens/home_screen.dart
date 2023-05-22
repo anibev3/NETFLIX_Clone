@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notnetflix/models/movie.dart';
+import 'package:notnetflix/repositories/data_repository.dart';
+import 'package:notnetflix/services/api_service.dart';
+import 'package:notnetflix/ui/widgets/movie_card.dart';
+import 'package:notnetflix/ui/widgets/movie_category.dart';
 import 'package:notnetflix/utils/constant.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,7 +17,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataRepository>(context);
     return Scaffold(
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
@@ -20,96 +32,37 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: ListView(
         children: [
-          Container(
+          SizedBox(
             height: 500,
-            color: Colors.red,
+            child: MovieCard(movie: dataProvider.popularMovieList.first),
           ),
-          const SizedBox(height: 15),
-          Text(
-            'Tendances actuelles',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          MovieCategory(
+            imageHeight: 160,
+            imageWidth: 110,
+            label: 'Tendances Actuelles',
+            movieList: dataProvider.popularMovieList,
+            callback: dataProvider.getPopularMovies,
           ),
-          const SizedBox(
-            height: 5,
+          MovieCategory(
+            imageHeight: 320,
+            imageWidth: 220,
+            label: 'Actuellement au cinéma',
+            movieList: dataProvider.nowPlaying,
+            callback: dataProvider.getNowPlaying,
           ),
-          SizedBox(
-            height: 160,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 8),
-                  width: 110,
-                  color: Colors.yellow,
-                  child: Center(
-                    child: Text(index.toString()),
-                  ),
-                );
-              },
-            ),
+          MovieCategory(
+            imageHeight: 160,
+            imageWidth: 110,
+            label: 'Ils arrivent bientôt',
+            movieList: dataProvider.upcomingMovies,
+            callback: dataProvider.getUpcomingMovies,
           ),
-          const SizedBox(height: 15),
-          Text(
-            'Actuellement au cinéma',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          SizedBox(
-            height: 320,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 8),
-                  width: 220,
-                  color: Colors.blue,
-                  child: Center(
-                    child: Text(index.toString()),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 15),
-          Text(
-            'Ils arrivent bientôt',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          SizedBox(
-            height: 160,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 8),
-                  width: 110,
-                  color: Colors.green,
-                  child: Center(
-                    child: Text(index.toString()),
-                  ),
-                );
-              },
-            ),
+          MovieCategory(
+            imageHeight: 320,
+            imageWidth: 220,
+            label: 'Animations',
+            movieList: dataProvider.animationMovies,
+            callback: dataProvider.getAnimationMovies,
           ),
         ],
       ),
